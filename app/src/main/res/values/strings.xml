@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Coffee_App</string>
+    <string name="app_name">CafeApp</string>
+    <string name="find_the_best_coffee_n_you">Find The Best Coffee\n You</string>
 </resources>
