@@ -38,11 +38,17 @@ class MainActivity : BaseActivity() {
             btn2.setOnClickListener { startListActivity(2, "Hot Drink") }
             btn3.setOnClickListener { startListActivity(3, "Hot Coffee") }
             btn4.setOnClickListener { startListActivity(4, "Ice Coffee") }
-            btn5.setOnClickListener { startListActivity(5, "Brewing Coffee") } // Sửa chữ D thành B
+            btn5.setOnClickListener { startListActivity(5, "Brewing Coffee") }
             btn6.setOnClickListener { startListActivity(6, "Shake") }
             btn7.setOnClickListener { startListActivity(7, "Restaurant") }
             btn8.setOnClickListener { startListActivity(8, "Breakfast") }
             btn9.setOnClickListener { startListActivity(9, "Cake") }
+
+            // FIX: Đắp sự kiện click cho nút Lịch Sử chuẩn quy trình binding nhóm
+            btnHistory.setOnClickListener {
+                val intent = Intent(this@MainActivity, OrderHistoryActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 

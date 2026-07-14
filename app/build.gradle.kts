@@ -45,12 +45,16 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.firebase.database)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
-    implementation("com.github.Dimezis:BlurView:version-2.0.5")
-    implementation("com.github.bumptech.glide:glide:4.12.0")
+
+    // FIX TRIỆT ĐỂ: Dùng chuỗi string trực tiếp để không phụ thuộc file toml của nhóm
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.github.Dimezis:BlurView:version-2.0.6")
 }
