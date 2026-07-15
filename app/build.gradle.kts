@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.cafeapp"
-        minSdk = 24
+        minSdk = 26
         // Đã sửa thành 37 để đồng bộ với compileSdk phía trên
         targetSdk = 37
         versionCode = 1

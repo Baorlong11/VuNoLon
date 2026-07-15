@@ -44,20 +44,24 @@ class MainActivity : BaseActivity() {
             btn8.setOnClickListener { startListActivity(8, "Breakfast") }
             btn9.setOnClickListener { startListActivity(9, "Cake") }
 
-            // FIX: Đắp sự kiện click cho nút Lịch Sử chuẩn quy trình binding nhóm
+            // Chuyển sang CartActivity
+            btnCart.setOnClickListener {
+                val intent = Intent(this@MainActivity, CartActivity::class.java)
+                startActivity(intent)
+            }
+
+            // Chuyển sang OrderHistoryActivity
             btnHistory.setOnClickListener {
                 val intent = Intent(this@MainActivity, OrderHistoryActivity::class.java)
                 startActivity(intent)
             }
-        }
+        } // Dấu ngoặc đóng của binding.apply ở đây mới đúng
     }
 
     private fun startListActivity(id: Int, title: String) {
         val intent = Intent(this, ListActivity::class.java)
-
         intent.putExtra("id", id)
         intent.putExtra("title", title)
-
         startActivity(intent)
     }
 
