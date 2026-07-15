@@ -1,9 +1,9 @@
-package com.example.cafeapp.ViewModel
+package com.example.cafeapp.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.cafeapp.Model.ItemsModel
-import com.example.cafeapp.Repository.MainRepository
+import com.example.cafeapp.model.ItemsModel
+import com.example.cafeapp.repository.MainRepository
 
 class MainViewModel : ViewModel() {
 

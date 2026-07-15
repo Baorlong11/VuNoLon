@@ -1,4 +1,4 @@
-package com.example.cafeapp.Adapter
+package com.example.cafeapp.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cafeapp.Model.OrderModel
+import com.example.cafeapp.model.OrderModel
 import com.example.cafeapp.R
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -32,17 +32,14 @@ class OrderAdapter(private val orderList: List<OrderModel>) :
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orderList[position]
 
-        // Hiển thị mã đơn hàng (rút gọn cho đẹp nếu quá dài)
         holder.orderIdTxt.text = "Mã đơn: #${order.orderId.takeLast(6).uppercase()}"
         holder.statusTxt.text = order.status
         holder.totalPriceTxt.text = "${order.totalAmount.toInt()} VND"
         holder.itemCountTxt.text = "${order.items.size} sản phẩm"
 
-        // Định dạng thời gian đặt hàng sang định dạng ngày/tháng/năm
         val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
         holder.dateTxt.text = "Ngày đặt: ${sdf.format(Date(order.orderDate))}"
 
-        // Đổi màu chữ trạng thái đơn hàng cho trực quan
         when (order.status.lowercase()) {
             "pending" -> holder.statusTxt.setTextColor(Color.parseColor("#FF9800"))
             "completed" -> holder.statusTxt.setTextColor(Color.parseColor("#4CAF50"))

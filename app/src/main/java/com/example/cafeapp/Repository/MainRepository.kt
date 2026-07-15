@@ -1,41 +1,31 @@
-package com.example.cafeapp.Repository
+package com.example.cafeapp.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.cafeapp.Model.ItemsModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.Query
-import com.google.firebase.database.ValueEventListener
+import com.example.cafeapp.model.ItemsModel
+import com.google.firebase.database.*
 
 class MainRepository {
     private val firebaseDatabase = FirebaseDatabase.getInstance()
 
+    // Tối ưu: Sử dụng listener lâu dài cho trang chủ để cập nhật giá ngay lập tức
     fun loadItems(): LiveData<MutableList<ItemsModel>> {
         val listData = MutableLiveData<MutableList<ItemsModel>>()
         val ref = firebaseDatabase.getReference("Items")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+        
+        ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                try {
-                    val lists = mutableListOf<ItemsModel>()
-                    for (childSnapshot in snapshot.children) {
-                        val item = childSnapshot.getValue(ItemsModel::class.java)
-                        item?.let { lists.add(it) }
-                    }
-                    listData.value = lists
-                } catch (e: Exception) {
-                    // In lỗi ra Logcat nếu bị sai kiểu dữ liệu
-                    Log.e("FirebaseDebug", "Lỗi loadItems: ${e.message}")
-                    // Ép trả về danh sách rỗng để ứng dụng TẮT VÒNG XOAY
-                    listData.value = mutableListOf()
+                val lists = mutableListOf<ItemsModel>()
+                for (childSnapshot in snapshot.children) {
+                    val item = childSnapshot.getValue(ItemsModel::class.java)
+                    item?.let { lists.add(it) }
                 }
+                listData.postValue(lists) // postValue an toàn hơn khi gọi từ background thread
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseDebug", "Lỗi mạng: ${error.message}")
-                listData.value = mutableListOf()
+                listData.postValue(mutableListOf())
             }
         })
         return listData
@@ -45,33 +35,38 @@ class MainRepository {
         val listData = MutableLiveData<MutableList<ItemsModel>>()
         val ref = firebaseDatabase.getReference("Items")
 
-        val query: Query = ref.orderByChild("categoryId").equalTo(id.toString())
+        // Tối ưu: Firebase query đôi khi cần string, đôi khi cần int. Chúng ta thử cả hai.
+        val query: Query = ref.orderByChild("categoryId").equalTo(id.toDouble())
 
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                try {
-                    val lists = mutableListOf<ItemsModel>()
-
-                    if (!snapshot.exists()) {
-                        Log.d("FirebaseDebug", "Không tìm thấy dữ liệu trên Firebase cho ID: $id")
-                    }
-
+                val lists = mutableListOf<ItemsModel>()
+                if (snapshot.exists()) {
                     for (childSnapshot in snapshot.children) {
                         val item = childSnapshot.getValue(ItemsModel::class.java)
                         item?.let { lists.add(it) }
                     }
-                    listData.value = lists
-                    Log.d("FirebaseDebug", "Đã tải thành công ${lists.size} sản phẩm")
-
-                } catch (e: Exception) {
-                    Log.e("FirebaseDebug", "Lỗi parse dữ liệu loadFiltered: ${e.message}")
-                    listData.value = mutableListOf()
+                    listData.postValue(lists)
+                } else {
+                    // Fallback: Nếu không tìm thấy theo Number, thử tìm theo String (do data Firebase có thể hỗn hợp)
+                    ref.orderByChild("categoryId").equalTo(id.toString()).addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(subSnapshot: DataSnapshot) {
+                            val subLists = mutableListOf<ItemsModel>()
+                            for (child in subSnapshot.children) {
+                                val item = child.getValue(ItemsModel::class.java)
+                                item?.let { subLists.add(it) }
+                            }
+                            listData.postValue(subLists)
+                        }
+                        override fun onCancelled(error: DatabaseError) {
+                            listData.postValue(mutableListOf())
+                        }
+                    })
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseDebug", "Bị hủy do lỗi: ${error.message}")
-                listData.value = mutableListOf()
+                listData.postValue(mutableListOf())
             }
         })
         return listData

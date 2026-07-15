@@ -10,23 +10,25 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="48dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/img"
                     android:layout_width="0dp"
-                    android:layout_height="400dp"
+                    android:layout_height="350dp"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -36,126 +38,123 @@
 
                 <ImageView
                     android:id="@+id/backBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
+                    android:background="@drawable/half_white"
+                    android:padding="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/back" />
 
                 <ImageView
                     android:id="@+id/favBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginEnd="16dp"
+                    android:background="@drawable/half_white"
+                    android:padding="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/backBtn"
                     app:srcCompat="@drawable/favorite_white" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:background="@drawable/dark_grey_bg"
-                android:layout_height="110dp">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
                     android:id="@+id/titleTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
                     android:text="Title"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/subtitleTxt"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="32dp"
+                    android:layout_marginTop="4dp"
                     android:text="subtitle"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/titleTxt" />
+                    android:textColor="@color/lightGray" />
 
                 <TextView
                     android:id="@+id/priceTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="0 VND"
                     android:textColor="@color/orange"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Mô tả"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/descriptionTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="16dp"
                 android:text="description"
-                android:textColor="@color/white"
-                android:layout_margin="16dp"/>
+                android:textColor="@color/lightGray" />
 
             <TextView
-                android:id="@+id/textView10"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Size"
+                android:layout_marginStart="16dp"
+                android:text="Chọn Size"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginStart="16dp"/>
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/sizeBtn1"
-                    style="@android:style/Widget.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/orange_stroke_bg"
                     android:text="S"
-                    android:textColor="@color/orange"
-                    android:textSize="16sp" />
+                    android:textColor="@color/orange" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/sizeBtn2"
-                    style="@android:style/Widget.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/dark_grey_bg2"
                     android:text="M"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:textColor="@color/white" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/sizeBtn3"
-                    style="@android:style/Widget.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
                     android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/dark_grey_bg2"
                     android:text="L"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -167,48 +166,68 @@
 
                 <TextView
                     android:id="@+id/minusBtn"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/dark_grey_bg2"
                     android:gravity="center"
                     android:text="-"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/numberOrderTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginHorizontal="30dp"
                     android:text="1"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/plusBtn"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/dark_grey_bg2"
                     android:gravity="center"
                     android:text="+"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textSize="24sp" />
             </LinearLayout>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/buyBtn"
-                style="@android:style/Widget.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="@drawable/orange_bg"
-                android:text="Mua Ngay"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/dark_grey_bg"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addToCartBtn"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/dark_grey_bg2"
+            android:text="Thêm Giỏ Hàng"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buyNowBtn"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/orange_bg"
+            android:text="Mua Ngay"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

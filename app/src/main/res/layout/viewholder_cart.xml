@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:background="@drawable/dark_grey_bg">
+    android:background="@drawable/dark_grey_bg"
+    android:rotationX="-2">
 
     <ImageView
         android:id="@+id/picCart"

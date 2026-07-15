@@ -1,4 +1,4 @@
-package com.example.cafeapp.Model
+package com.example.cafeapp.model
 
 import android.os.Parcel
 import android.os.Parcelable

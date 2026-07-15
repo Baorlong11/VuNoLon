@@ -1,71 +1,86 @@
-package com.example.cafeapp.Activity
+package com.example.cafeapp.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cafeapp.Adapter.OrderAdapter
-import com.example.cafeapp.Model.OrderModel
-import com.example.cafeapp.databinding.ActivityOrderHistoryBinding
+import androidx.recyclerview.widget.RecyclerView
+import com.example.cafeapp.R
+import com.example.cafeapp.adapter.OrderAdapter
+import com.example.cafeapp.model.OrderModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import java.util.ArrayList
+import com.google.firebase.database.*
 
-class OrderHistoryActivity : BaseActivity() { // Đổi thành BaseActivity nếu project của bạn dùng chung BaseActivity
-    private lateinit var binding: ActivityOrderHistoryBinding
+class OrderHistoryActivity : BaseActivity() {
+
+    private lateinit var orderRecyclerView: RecyclerView
+    private lateinit var emptyOrderTxt: TextView
+    private lateinit var progressBar: ProgressBar
+    private var orderListener: ValueEventListener? = null
+    private lateinit var query: Query
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityOrderHistoryBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_order_history)
 
-        binding.backBtn.setOnClickListener { finish() }
-
-        binding.orderRecyclerView.layoutManager = LinearLayoutManager(this)
-
+        initViews()
         loadOrderHistory()
     }
 
+    private fun initViews() {
+        orderRecyclerView = findViewById(R.id.orderRecyclerView)
+        emptyOrderTxt = findViewById(R.id.emptyOrderTxt)
+        progressBar = findViewById(R.id.progressBarOrderHistory)
+        
+        findViewById<ImageView>(R.id.backBtn).setOnClickListener { finish() }
+        
+        orderRecyclerView.layoutManager = LinearLayoutManager(this)
+        orderRecyclerView.setHasFixedSize(true)
+    }
+
     private fun loadOrderHistory() {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser == null) {
-            binding.emptyOrderTxt.visibility = View.VISIBLE
-            binding.emptyOrderTxt.text = "Vui lòng đăng nhập để xem lịch sử!"
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user == null) {
+            emptyOrderTxt.visibility = View.VISIBLE
+            emptyOrderTxt.text = "Vui lòng đăng nhập để xem lịch sử"
             return
         }
 
+        progressBar.visibility = View.VISIBLE
         val ref = FirebaseDatabase.getInstance().getReference("Orders")
-        val query = ref.orderByChild("userEmail").equalTo(currentUser.email)
+        query = ref.orderByChild("userEmail").equalTo(user.email)
 
-        query.addValueEventListener(object : ValueEventListener {
+        orderListener = query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val orderList = ArrayList<OrderModel>()
-
-                for (childSnapshot in snapshot.children) {
-                    val order = childSnapshot.getValue(OrderModel::class.java)
+                progressBar.visibility = View.GONE
+                val orderList = mutableListOf<OrderModel>()
+                for (child in snapshot.children) {
+                    val order = child.getValue(OrderModel::class.java)
                     order?.let { orderList.add(it) }
                 }
 
-                orderList.sortByDescending { it.orderDate }
-
                 if (orderList.isEmpty()) {
-                    binding.emptyOrderTxt.visibility = View.VISIBLE
-                    binding.orderRecyclerView.visibility = View.GONE
+                    emptyOrderTxt.visibility = View.VISIBLE
+                    orderRecyclerView.visibility = View.GONE
                 } else {
-                    binding.emptyOrderTxt.visibility = View.GONE
-                    binding.orderRecyclerView.visibility = View.VISIBLE
-                    binding.orderRecyclerView.adapter = OrderAdapter(orderList)
+                    emptyOrderTxt.visibility = View.GONE
+                    orderRecyclerView.visibility = View.VISIBLE
+                    orderRecyclerView.adapter = OrderAdapter(orderList.asReversed())
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                binding.emptyOrderTxt.visibility = View.VISIBLE
-                binding.emptyOrderTxt.text = "Lỗi tải dữ liệu đơn hàng!"
+                progressBar.visibility = View.GONE
+                Toast.makeText(this@OrderHistoryActivity, "Lỗi: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        orderListener?.let { query.removeEventListener(it) }
     }
 }

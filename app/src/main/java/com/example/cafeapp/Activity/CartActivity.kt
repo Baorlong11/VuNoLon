@@ -1,47 +1,85 @@
-package com.example.cafeapp.Activity
+package com.example.cafeapp.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.cafeapp.Adapter.CartAdapter
-import com.example.cafeapp.Helper.ManagementCart
-import com.example.cafeapp.databinding.ActivityCartBinding
+import androidx.recyclerview.widget.RecyclerView
+import com.example.cafeapp.R
+import com.example.cafeapp.adapter.CartAdapter
+import com.example.cafeapp.helper.ManagementCart
 
 class CartActivity : BaseActivity() {
-    private lateinit var binding: ActivityCartBinding
     private lateinit var managementCart: ManagementCart
-    private var tax: Double = 0.0
+    
+    private lateinit var totalTxt: TextView
+    private lateinit var deliveryTxt: TextView
+    private lateinit var allTotalTxt: TextView
+    private lateinit var emptyTxt: TextView
+    private lateinit var cartView: RecyclerView
+    private lateinit var constraintLayout: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCartBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_cart)
 
         managementCart = ManagementCart(this)
 
+        initViews()
         initCartList()
         calculateCart()
         setVariable()
     }
 
+    private fun initViews() {
+        totalTxt = findViewById(R.id.totalTxt)
+        deliveryTxt = findViewById(R.id.deliveryTxt)
+        allTotalTxt = findViewById(R.id.allTotalTxt)
+        emptyTxt = findViewById(R.id.emptyTxt)
+        cartView = findViewById(R.id.cartView)
+        constraintLayout = findViewById(R.id.constraintLayout)
+    }
+
     private fun setVariable() {
-        binding.backBtn.setOnClickListener { finish() }
+        findViewById<ImageView>(R.id.backBtn).setOnClickListener { finish() }
+        findViewById<View>(R.id.checkoutBtn).setOnClickListener {
+            if (managementCart.getListCart().isEmpty()) {
+                android.widget.Toast.makeText(this, "Giỏ hàng trống", android.widget.Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            val delivery = 15000.0
+            val total = managementCart.getTotalFee()
+            val allTotal = total + delivery
+            
+            val intent = Intent(this, CheckoutActivity::class.java)
+            intent.putExtra("total", allTotal)
+            startActivity(intent)
+        }
     }
 
     private fun initCartList() {
-        if (managementCart.getListCart().isEmpty()) {
-            binding.emptyTxt.visibility = View.VISIBLE
-            binding.cartView.visibility = View.GONE
-            binding.constraintLayout.visibility = View.GONE
+        val listCart = managementCart.getListCart()
+        if (listCart.isEmpty()) {
+            emptyTxt.visibility = View.VISIBLE
+            cartView.visibility = View.GONE
+            constraintLayout.visibility = View.GONE
         } else {
-            binding.emptyTxt.visibility = View.GONE
-            binding.cartView.visibility = View.VISIBLE
-            binding.constraintLayout.visibility = View.VISIBLE
+            emptyTxt.visibility = View.GONE
+            cartView.visibility = View.VISIBLE
+            constraintLayout.visibility = View.VISIBLE
 
-            binding.cartView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-            binding.cartView.adapter = CartAdapter(managementCart.getListCart(), managementCart, object : ManagementCart.ChangeNumberItemsListener {
+            cartView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            cartView.adapter = CartAdapter(listCart, managementCart, object : ManagementCart.ChangeNumberItemsListener {
                 override fun onChanged() {
                     calculateCart()
+                    if (managementCart.getListCart().isEmpty()) {
+                        emptyTxt.visibility = View.VISIBLE
+                        cartView.visibility = View.GONE
+                        constraintLayout.visibility = View.GONE
+                    }
                 }
             })
         }
@@ -52,8 +90,8 @@ class CartActivity : BaseActivity() {
         val total = managementCart.getTotalFee()
         val allTotal = total + delivery
 
-        binding.totalTxt.text = "${total.toInt()} VND"
-        binding.deliveryTxt.text = "${delivery.toInt()} VND"
-        binding.allTotalTxt.text = "${allTotal.toInt()} VND"
+        totalTxt.text = "${total.toInt()} VND"
+        deliveryTxt.text = "${delivery.toInt()} VND"
+        allTotalTxt.text = "${allTotal.toInt()} VND"
     }
 }

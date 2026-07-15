@@ -1,4 +1,4 @@
-package com.example.cafeapp.Adapter
+package com.example.cafeapp.adapter
 
 import android.content.Context
 import android.content.Intent
@@ -9,8 +9,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.example.cafeapp.Activity.DetailActivity // 🔥 Import thêm file DetailActivity
-import com.example.cafeapp.Model.ItemsModel
+import com.example.cafeapp.activity.DetailActivity
+import com.example.cafeapp.model.ItemsModel
 import com.example.cafeapp.databinding.ViewholderItemBinding
 
 class ListItemAdapter(val items: MutableList<ItemsModel>) : RecyclerView.Adapter<ListItemAdapter.Viewholder>() {
@@ -39,7 +39,6 @@ class ListItemAdapter(val items: MutableList<ItemsModel>) : RecyclerView.Adapter
                 .into(holder.binding.imageView4)
         }
 
-        // 🔥 ĐÃ MỞ KHÓA SỰ KIỆN CLICK: Bấm vào ly cà phê sẽ nhảy sang DetailActivity
         holder.itemView.setOnClickListener {
             val intent = Intent(holder.itemView.context, DetailActivity::class.java)
             intent.putExtra("object", item)

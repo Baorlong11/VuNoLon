@@ -1,4 +1,4 @@
-package com.example.cafeapp.Activity
+package com.example.cafeapp.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +13,8 @@ class IntroActivity : BaseActivity() {
         setContentView(R.layout.activity_intro)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }, 1000)
     }
 }

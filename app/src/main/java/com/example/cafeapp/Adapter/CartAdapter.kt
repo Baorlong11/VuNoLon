@@ -1,4 +1,4 @@
-package com.example.cafeapp.Adapter
+package com.example.cafeapp.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.example.cafeapp.Helper.ManagementCart
-import com.example.cafeapp.Model.ItemsModel
+import com.example.cafeapp.helper.ManagementCart
+import com.example.cafeapp.model.ItemsModel
 import com.example.cafeapp.databinding.ViewholderCartBinding
 
 class CartAdapter(
@@ -39,27 +39,39 @@ class CartAdapter(
         holder.binding.numberItemTxt.text = item.numberInCart.toString()
         holder.binding.sizeTxt.text = "Size: ${item.size}"
 
-        Glide.with(holder.itemView.context)
-            .load(item.picUrl[0])
-            .apply(RequestOptions.bitmapTransform(RoundedCorners(50)))
-            .into(holder.binding.picCart)
+        if (item.picUrl.isNotEmpty()) {
+            Glide.with(holder.itemView.context)
+                .load(item.picUrl[0])
+                .apply(RequestOptions.bitmapTransform(RoundedCorners(50)))
+                .into(holder.binding.picCart)
+        }
 
         holder.binding.plusCartBtn.setOnClickListener {
-            managementCart.plusItem(listItemSelected, position, object : ManagementCart.ChangeNumberItemsListener {
-                override fun onChanged() {
-                    notifyDataSetChanged()
-                    listener.onChanged()
-                }
-            })
+            val currentPosition = holder.bindingAdapterPosition
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                managementCart.plusItem(listItemSelected, currentPosition, object : ManagementCart.ChangeNumberItemsListener {
+                    override fun onChanged() {
+                        notifyItemChanged(currentPosition)
+                        listener.onChanged()
+                    }
+                })
+            }
         }
 
         holder.binding.minusCartBtn.setOnClickListener {
-            managementCart.minusItem(listItemSelected, position, object : ManagementCart.ChangeNumberItemsListener {
-                override fun onChanged() {
-                    notifyDataSetChanged()
-                    listener.onChanged()
-                }
-            })
+            val currentPosition = holder.bindingAdapterPosition
+            if (currentPosition != RecyclerView.NO_POSITION) {
+                managementCart.minusItem(listItemSelected, currentPosition, object : ManagementCart.ChangeNumberItemsListener {
+                    override fun onChanged() {
+                        if (currentPosition < listItemSelected.size) {
+                            notifyItemChanged(currentPosition)
+                        } else {
+                            notifyDataSetChanged()
+                        }
+                        listener.onChanged()
+                    }
+                })
+            }
         }
     }
 

@@ -1,55 +1,64 @@
-package com.example.cafeapp.Helper
+package com.example.cafeapp.helper
 
 import android.content.Context
 import android.widget.Toast
-import com.example.cafeapp.Model.ItemsModel
+import com.example.cafeapp.model.ItemsModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
-class ManagementCart(val context: Context) {
+class ManagementCart(private val context: Context) {
     private val sharedPreferences = context.getSharedPreferences("cafe_cart", Context.MODE_PRIVATE)
     private val gson = Gson()
 
+    // Tối ưu: Đồng bộ hóa luồng dữ liệu để tránh ghi đè sai
     fun insertItem(item: ItemsModel) {
         val listCart = getListCart()
-        val existInCart = listCart.any { it.title == item.title && it.size == item.size }
+        val existingItem = listCart.find { it.title == item.title && it.size == item.size }
 
-        if (existInCart) {
-            listCart.forEach {
-                if (it.title == item.title && it.size == item.size) {
-                    it.numberInCart += item.numberInCart
-                }
-            }
+        if (existingItem != null) {
+            existingItem.numberInCart += item.numberInCart
         } else {
             listCart.add(item)
         }
 
-        sharedPreferences.edit().putString("cart_list", gson.toJson(listCart)).apply()
-        Toast.makeText(context, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show()
+        saveCart(listCart)
+        Toast.makeText(context, "Đã thêm ${item.title} vào giỏ", Toast.LENGTH_SHORT).show()
     }
 
     fun getListCart(): ArrayList<ItemsModel> {
         val json = sharedPreferences.getString("cart_list", null)
-        if (json == null) {
-            return ArrayList()
+        if (json.isNullOrEmpty()) return ArrayList()
+        
+        return try {
+            val listType: Type = object : TypeToken<ArrayList<ItemsModel>>() {}.type
+            gson.fromJson(json, listType) ?: ArrayList()
+        } catch (e: Exception) {
+            ArrayList() // Trả về danh sách trống nếu dữ liệu lỗi
         }
-        val type = object : TypeToken<ArrayList<ItemsModel>>() {}.type
-        return gson.fromJson(json, type)
+    }
+
+    private fun saveCart(listCart: ArrayList<ItemsModel>) {
+        sharedPreferences.edit().putString("cart_list", gson.toJson(listCart)).apply()
     }
 
     fun minusItem(listCart: ArrayList<ItemsModel>, position: Int, listener: ChangeNumberItemsListener) {
-        if (listCart[position].numberInCart == 1) {
+        if (position < 0 || position >= listCart.size) return
+        
+        if (listCart[position].numberInCart <= 1) {
             listCart.removeAt(position)
         } else {
             listCart[position].numberInCart--
         }
-        sharedPreferences.edit().putString("cart_list", gson.toJson(listCart)).apply()
+        saveCart(listCart)
         listener.onChanged()
     }
 
     fun plusItem(listCart: ArrayList<ItemsModel>, position: Int, listener: ChangeNumberItemsListener) {
+        if (position < 0 || position >= listCart.size) return
+        
         listCart[position].numberInCart++
-        sharedPreferences.edit().putString("cart_list", gson.toJson(listCart)).apply()
+        saveCart(listCart)
         listener.onChanged()
     }
 
@@ -65,6 +74,10 @@ class ManagementCart(val context: Context) {
             fee += (item.price + sizeExtra) * item.numberInCart
         }
         return fee
+    }
+
+    fun clearCart() {
+        sharedPreferences.edit().remove("cart_list").apply()
     }
 
     interface ChangeNumberItemsListener {
