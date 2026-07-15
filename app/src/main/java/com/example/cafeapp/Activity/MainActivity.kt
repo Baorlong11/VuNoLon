@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.cafeapp.R
 import eightbitlab.com.blurview.RenderScriptBlur
 import com.example.cafeapp.databinding.ActivityMainBinding
+import com.example.cafeapp.Activity.CartActivity
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -47,6 +48,11 @@ class MainActivity : BaseActivity() {
             // FIX: Đắp sự kiện click cho nút Lịch Sử chuẩn quy trình binding nhóm
             btnHistory.setOnClickListener {
                 val intent = Intent(this@MainActivity, OrderHistoryActivity::class.java)
+                startActivity(intent)
+            }
+
+            btnCart.setOnClickListener {
+                val intent = Intent(this@MainActivity, CartActivity::class.java)
                 startActivity(intent)
             }
         }

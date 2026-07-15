@@ -9,7 +9,9 @@ data class ItemsModel(
     var picUrl: ArrayList<String> = ArrayList(),
     var price: Double = 0.0,
     var extra: String = "",
-    var categoryId: String = ""
+    var categoryId: String = "",
+    var numberInCart: Int = 0,
+    var size: String = ""
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -18,6 +20,8 @@ data class ItemsModel(
         parcel.createStringArrayList() ?: ArrayList(),
         parcel.readDouble(),
         parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readInt(),
         parcel.readString().toString()
     )
 
@@ -28,6 +32,8 @@ data class ItemsModel(
         parcel.writeDouble(price)
         parcel.writeString(extra)
         parcel.writeString(categoryId)
+        parcel.writeInt(numberInCart)
+        parcel.writeString(size)
     }
 
     override fun describeContents(): Int {

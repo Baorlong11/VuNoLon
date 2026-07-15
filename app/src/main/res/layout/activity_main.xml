@@ -32,6 +32,20 @@
         app:tint="@color/white" />
 
     <ImageView
+        android:id="@+id/btnCart"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/half_white"
+        android:padding="10dp"
+        android:elevation="5dp"
+        app:layout_constraintStart_toEndOf="@+id/btnHistory"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_view"
+        app:tint="@color/white" />
+
+    <ImageView
         android:id="@+id/btnLogout"
         android:layout_width="45dp"
         android:layout_height="45dp"

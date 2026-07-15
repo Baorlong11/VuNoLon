@@ -6,4 +6,5 @@
     <color name="grey">#2d2c2a</color>
     <color name="darkGrey">#1a1a1a</color>
     <color name="lightGray">#626160</color>
+    <color name="red">#FF0000</color>
 </resources>

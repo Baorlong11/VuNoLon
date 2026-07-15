@@ -47,6 +47,10 @@
             android:name=".Activity.ListActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Activity.CartActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".Activity.OrderHistoryActivity" android:exported="false" />
     </application>
 
